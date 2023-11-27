@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <style>
 body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
 body {
@@ -19,6 +21,68 @@ body {
 .w3-sidebar {width: 120px;background: #222;}
 #main {margin-left: 120px}
 @media only screen and (max-width: 600px) {#main {margin-left: 0}}
+
+* {
+    box-sizing: border-box;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+}
+
+input[type="submit"] {
+    background-color: #3498db;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+     background-color: #2980b9;
+}
+
+.container {
+     max-width: 800px;
+     margin: 0 auto;
+     border-radius: 8px;
+     background-color: #fff;
+     padding: 10px;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+     color: #555;
+     font-weight: bold;
+}
+
+.error {
+     border-color: red;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+.layer {
+    width: 80%;
+}
+
+.container {
+    width: 100%;
+}
+}
 </style>
 </head>
 <body class="w3-black">
@@ -168,20 +232,30 @@ body {
       <p><i class="fa fa-envelope fa-fw w3-text-white w3-xxlarge w3-margin-right"> </i> Email: ryan.komala@binus.ac.id</p>
     </div><br>
     <p class="w3-text-white">Let's get in touch. Send me a message:</p>
-
-    <form action="/action_page.php" target="_blank">
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Name" required name="Name"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="Email"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Subject" required name="Subject"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Message" required name="Message"></p>
-      <p>
-        <button class="w3-button w3-light-grey w3-padding-large" type="submit">
-          <i class="fa fa-paper-plane"></i> SEND MESSAGE
-        </button>
-      </p>
-    </form>
-  <!-- End Contact Section -->
   </div>
+
+  <div class="container">
+      <form id="contactForm" action="/action_page.php">
+          <label for="fname">First Name</label>
+          <input type="text" id="fname" name="firstname" placeholder="Your first name">
+
+          <label for="lname">Last Name</label>    
+          <input type="text" id="lname" name="lastname" placeholder="Your last name">
+
+          <label for="email">E-mail</label>
+          <input type="text" id="email" name="email" placeholder="Your email address">
+
+          <label for="phone">Phone Number</label>
+          <input type="text" id="phone" name="phone" placeholder="Your phone number">
+
+          <label for="extras">Extras</label>
+          <textarea type="text" id="extras" name="extras"></textarea>
+
+          <input type="submit" value="Submit">
+      </form>
+  </div>
+  <!-- End Contact Section -->
+
   
     <!-- Footer -->
   <footer class="w3-content w3-padding-64 w3-text-white w3-xlarge">
@@ -204,8 +278,64 @@ body {
   <!-- End footer -->
   </footer>
 
-<!-- END PAGE CONTENT -->
 </div>
+<script>
+  $(document).ready(function () {
+      $("#contactForm").submit(function (event) {
+          event.preventDefault();
+          validateForm();
+      });
+
+      function showError(element, message) {
+          element.addClass("error").after($("<p class='error-message'>" + message + "</p>"));
+      }
+
+      function hideError(element) {
+          element.removeClass("error").next(".error-message").remove();
+      }
+
+      function validateForm() {
+          $(".error-message").remove();
+          $("input, select, textarea").removeClass("error");
+
+          var isValid = true;
+
+          function validateField(field, validationFn, errorMessage) {
+              if (!validationFn(field.val())) {
+                  showError(field, errorMessage);
+                  isValid = false;
+              } else {
+                  hideError(field);
+              }
+          }
+
+          validateField($("#fname"), val => /^[A-Za-z]+$/.test(val),
+              "Please enter a valid first name (alphabets only)");
+
+          validateField($("#lname"), val => /^[A-Za-z]+$/.test(val),
+              "Please enter a valid last name (alphabets only)");
+
+          validateField($("#email"), val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+              "Please enter a valid email address");
+
+          validateField($("#phone"), val => /^\d{10,12}$/.test(val),
+              "Please enter a valid phone number (10-12 digits)");
+
+          if (isValid) {
+              alert("Form submitted successfully!");
+          }
+      }
+  });
+
+  function myFunction() {
+      var x = document.getElementById("navDemo");
+      if (x.className.indexOf("w3-show") == -1) {
+          x.className += " w3-show";
+      } else { 
+          x.className = x.className.replace(" w3-show", "");
+      }
+  }
+</script>
 
 </body>
 </html>
